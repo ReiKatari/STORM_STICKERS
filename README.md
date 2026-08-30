@@ -1,65 +1,34 @@
-<div align="center">
+# STORM STICKERS
 
-<img src="logo.png" width="128" height="128" alt="STORM STICKERS Logo" />
+## **О проекте**
+STORM STICKERS — инструмент для быстрого создания, редактирования, нарезки и экспорта стикер-паков для Telegram, Discord и WhatsApp с автоматическим удалением фона и оптимизацией размера.
 
-# ⚡ STORM STICKERS
+## **Происхождение и форки**
+Оригинальная разработка ReiKatari.
 
-<p align="center">
-  <b>Парящие полупрозрачные стикеры и виджеты заметок на рабочий стол с поддержкой форматирования.</b>
-</p>
+## **Технологический стек**
+- **Языки программирования**: C# (.NET 9.0)
+- **Интерфейс**: WPF, XAML, Drag & Drop
+- **Обработка графики**: ImageSharp, WebP Encoder, PNG Optimization
 
-[![Version](https://img.shields.io/badge/version-1.0.0-00D2FF.svg?style=for-the-badge)](https://github.com/ReiKatari/STORM_STICKERS)
-[![Platform](https://img.shields.io/badge/Platform-Windows%2011%20%7C%2010-0EA5E9.svg?style=for-the-badge)](https://github.com/ReiKatari/STORM_STICKERS)
-[![Publisher](https://img.shields.io/badge/Publisher-STORM%20TEAM-10B981.svg?style=for-the-badge)](https://github.com/ReiKatari)
-[![Developer](https://img.shields.io/badge/Author-ReiKatari-F59E0B.svg?style=for-the-badge)](https://github.com/ReiKatari)
-[![Signed](https://img.shields.io/badge/Security-SHA256%20Signed-10B981.svg?style=for-the-badge)](https://github.com/ReiKatari)
+## **Ключевые возможности**
+- **Авто-подгонка под требования мессенджеров**: Масштабирование до 512x512, конвертация в WebP/PNG с лимитом размера до 512 КБ.
+- **Добавление обводки и теней**: Создание стикерного белого контура вокруг вырезанных объектов.
+- **Пакетный экспорт**: Создание готовых архивов стикер-паков для мгновенной загрузки в ботов Telegram.
 
-</div>
+## **Поддерживаемые платформы и эмуляторы**
+- **Операционные системы**: Windows 10, Windows 11 (x64)
 
----
+## **Установка и запуск**
+1. Скачайте инсталлятор из **Releases** на GitHub.
+2. Установите и запустите приложение.
 
-## 🌟 О проекте / Overview
+## **Безопасность и цифровые подписи**
+Подписано сертификатом **CN=STORM SOFT, O=STORM EDEN** (SHA-256 Authenticode).
 
-**STORM STICKERS** — компонент программного комплекса **STORM**, разработанный с упором на максимальную производительность, современный дизайн и надёжность.
+## **Авторы и лицензия**
+- **Автор проекта**: ReiKatari
+- **Лицензия**: MIT License
 
-* **Версия:** $ver
-* **Издатель:** STORM TEAM
-* **Ведущий разработчик:** ReiKatari
-* **Технологический стек:** $tech
-
----
-
-## 🚀 Установка / Installation
-
-Установка производится через единый инсталлятор **STORM INSTALLER**:
-
-1. Запустите файл STORM_STORM_STICKERS_1.0.0_Setup.exe.
-2. Выберите режим:
-   * **Стандартная установка** — установка в C:\Program Files\STORM STICKERS с созданием ярлыков и регистрацией в системе.
-   * **Портативная версия** — распаковка в любую выбранную папку без изменения реестра.
-3. Опция автоматической регистрации доверенного сертификата STORM TEAM исключает предупреждения SmartScreen и Smart App Control.
-
----
-
-## 🛡️ Безопасность и Цифровая подпись / Code Signing
-
-Все исполняемые файлы и инсталляторы подписаны сертификатом **STORM TEAM** с использованием хэширования SHA-256 и RFC 3161 Timestamping.
-
-* Для ручной установки сертификата в хранилище доверенных корневых центров запустите:
-  Files\Разблокировать_И_Установить_Сертификат.bat от имени Администратора.
-
----
-
-## 📁 Структура репозитория / Structure
-
-* Assembling/ — скомпилированные релизные бинарные файлы и зависимости программы.
-* Files/ — инсталлятор, сертификат STORM_Certificate.cer и сервисные скрипты.
-* Sources/ — исходный код решения.
-
----
-
-## 👥 Авторы и Лицензия / Credits
-
-* **Разработчик:** [ReiKatari](https://github.com/ReiKatari)
-* **Издатель:** **STORM TEAM**
-* © 2026 STORM TEAM. Все права защищены.
+## **Благодарности**
+- **Команда ImageSharp** — за библиотеку манипуляции растровыми изображениями.

@@ -52,3 +52,25 @@ _ReSharper*/
 # Generated files
 Generated\ Files/
 *_wpftmp.csproj
+bin/
+obj/
+dist/
+build/
+out/
+target/
+Assembling/
+scratch/
+*.apk
+*.aab
+*.pfx
+*.cer
+*.msi
+*.zip
+*.7z
+*.rar
+*.tar.gz
+.vscode/
+Thumbs.db
+Desktop.ini
+*.tmp
+node_modules/
