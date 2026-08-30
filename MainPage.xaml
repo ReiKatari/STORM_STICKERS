@@ -1,0 +1,429 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Page
+    x:Class="STORM_STICKERS.MainPage"
+    x:Name="MainPageRoot"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="using:STORM_STICKERS"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+
+    <Page.Resources>
+        <local:StringFormatConverter x:Key="StringFormatConverter" />
+    </Page.Resources>
+
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <!-- Sidebar -->
+            <ColumnDefinition Width="320" />
+            <!-- Main Content Area -->
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+
+        <!-- SIDEBAR -->
+        <Border Grid.Column="0" 
+                Background="{ThemeResource CardBackgroundFillColorDefaultBrush}" 
+                BorderBrush="{ThemeResource ControlStrokeColorDefaultBrush}" 
+                BorderThickness="0,0,1,0" 
+                Padding="16">
+            <Grid RowSpacing="16">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" /> <!-- Title / Icon -->
+                    <RowDefinition Height="Auto" /> <!-- Output Folder Selection -->
+                    <RowDefinition Height="Auto" /> <!-- Global Parameters Title -->
+                    <RowDefinition Height="*" />    <!-- Global Parameters Content -->
+                    <RowDefinition Height="Auto" /> <!-- Action Button -->
+                </Grid.RowDefinitions>
+
+                <!-- Title -->
+                <StackPanel Grid.Row="0" Orientation="Horizontal" Spacing="10" Margin="0,0,0,8">
+                    <FontIcon Glyph="&#xEB9F;" Foreground="{ThemeResource SystemAccentColor}" FontSize="24" />
+                    <TextBlock Text="Настройки экспорта" FontSize="18" FontWeight="SemiBold" VerticalAlignment="Center" />
+                </StackPanel>
+
+                <!-- Output Folder -->
+                <StackPanel Grid.Row="1" Spacing="8">
+                    <TextBlock Text="Папка для сохранения:" FontWeight="Medium" FontSize="13" />
+                    <Grid ColumnSpacing="8">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <TextBox x:Name="TxtOutputPath" 
+                                 PlaceholderText="Укажите путь или перетащите папку..." 
+                                 IsReadOnly="False"
+                                 AllowDrop="True"
+                                 DragOver="TxtOutputPath_DragOver"
+                                 Drop="TxtOutputPath_Drop"
+                                 VerticalAlignment="Center"/>
+                        <Button Grid.Column="1" 
+                                Click="BtnBrowseOutput_Click"
+                                Padding="8,4"
+                                VerticalAlignment="Center"
+                                ToolTipService.ToolTip="Выбрать папку">
+                            <FontIcon Glyph="&#xED25;" FontSize="14" />
+                        </Button>
+                    </Grid>
+                    <TextBlock Text="Поддерживается Drag &amp; Drop папки" FontSize="11" Foreground="{ThemeResource SystemControlPageTextBaseMediumBrush}" />
+                </StackPanel>
+
+                <MenuFlyoutSeparator Grid.Row="2" />
+
+                <!-- Global Parameters -->
+                <ScrollViewer Grid.Row="3" VerticalScrollBarVisibility="Auto" Margin="0,8">
+                    <StackPanel Spacing="16">
+                        <TextBlock Text="Глобальные параметры" FontSize="14" FontWeight="SemiBold" />
+
+                        <!-- Method Choice -->
+                        <StackPanel Spacing="6">
+                            <TextBlock Text="Метод удаления фона:" FontSize="13" />
+                            <RadioButton x:Name="RadioFloodFill" Content="Заливка от краев (Flood Fill)" IsChecked="True" Checked="GlobalSetting_Changed" />
+                            <RadioButton x:Name="RadioGlobal" Content="По всему изображению" Checked="GlobalSetting_Changed" />
+                        </StackPanel>
+
+                        <!-- Color Keying -->
+                        <StackPanel Spacing="8">
+                            <TextBlock Text="Удаляемый цвет:" FontSize="13" />
+                            <Grid ColumnSpacing="12">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                
+                                <Border x:Name="RectGlobalColorPreview" 
+                                        Width="36" Height="36" 
+                                        CornerRadius="4" 
+                                        BorderThickness="1" 
+                                        BorderBrush="{ThemeResource ControlStrokeColorDefaultBrush}"
+                                        Background="Black"/>
+                                
+                                <StackPanel Grid.Column="1" Spacing="4">
+                                    <CheckBox x:Name="ChkAutoDetectColor" Content="Автоопределение (углы)" IsChecked="True" Checked="ChkAutoDetectColor_Changed" Unchecked="ChkAutoDetectColor_Changed" />
+                                    <Button x:Name="BtnPickGlobalColor" Content="Выбрать цвет" IsEnabled="False" Padding="8,4">
+                                        <Button.Flyout>
+                                            <Flyout>
+                                                <ColorPicker x:Name="GlobalColorPicker" IsAlphaEnabled="False" ColorChanged="GlobalColorPicker_ColorChanged" />
+                                            </Flyout>
+                                        </Button.Flyout>
+                                    </Button>
+                                </StackPanel>
+                            </Grid>
+                        </StackPanel>
+
+                        <!-- Tolerance Slider -->
+                        <StackPanel Spacing="4">
+                            <Grid>
+                                <TextBlock Text="Порог допуска (чувствительность):" FontSize="13" />
+                                <TextBlock Text="{Binding ElementName=SliderGlobalTolerance, Path=Value, Converter={StaticResource StringFormatConverter}, ConverterParameter='\{0:0\}%'}" 
+                                           HorizontalAlignment="Right" FontSize="12" Foreground="{ThemeResource SystemAccentColor}" />
+                            </Grid>
+                            <Slider x:Name="SliderGlobalTolerance" Minimum="0" Maximum="100" Value="15" ValueChanged="SliderGlobalTolerance_ValueChanged" />
+                            <TextBlock Text="Увеличьте порог, если фон удаляется не полностью" FontSize="11" Foreground="{ThemeResource SystemControlPageTextBaseMediumBrush}" TextWrapping="Wrap" />
+                        </StackPanel>
+                    </StackPanel>
+                </ScrollViewer>
+
+                <!-- Action Button -->
+                <Button Grid.Row="4" 
+                        x:Name="BtnProcessAll"
+                        Content="Обработать все" 
+                        Style="{StaticResource AccentButtonStyle}" 
+                        HorizontalAlignment="Stretch" 
+                        Height="40"
+                        Click="BtnProcessAll_Click">
+                    <Button.ContentTemplate>
+                        <DataTemplate>
+                            <StackPanel Orientation="Horizontal" Spacing="8" HorizontalAlignment="Center">
+                                <FontIcon Glyph="&#xE768;" FontSize="14" />
+                                <TextBlock Text="Сохранить все стикеры" FontWeight="SemiBold" />
+                            </StackPanel>
+                        </DataTemplate>
+                    </Button.ContentTemplate>
+                </Button>
+            </Grid>
+        </Border>
+
+        <!-- MAIN AREA -->
+        <Grid Grid.Column="1" Background="{ThemeResource SolidBackgroundFillColorBaseBrush}">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+
+            <!-- Top Header -->
+            <Border Grid.Row="0" BorderThickness="0,0,0,1" BorderBrush="{ThemeResource ControlStrokeColorDefaultBrush}" Padding="16,12">
+                <Grid>
+                    <TextBlock Text="Очередь обработки стикеров" FontSize="16" FontWeight="SemiBold" VerticalAlignment="Center" />
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="8">
+                        <Button x:Name="BtnClearQueue" Content="Очистить" Click="BtnClearQueue_Click" IsEnabled="False">
+                            <Button.ContentTemplate>
+                                <DataTemplate>
+                                    <StackPanel Orientation="Horizontal" Spacing="6">
+                                        <FontIcon Glyph="&#xE74D;" FontSize="12" />
+                                        <TextBlock Text="Очистить список" />
+                                    </StackPanel>
+                                </DataTemplate>
+                            </Button.ContentTemplate>
+                        </Button>
+                    </StackPanel>
+                </Grid>
+            </Border>
+
+            <!-- Content Body -->
+            <Grid Grid.Row="1">
+                <!-- Drop Zone Empty State (Visible when no stickers) -->
+                <Grid x:Name="GridDropZone" 
+                      Background="Transparent"
+                      AllowDrop="True"
+                      DragOver="GridDropZone_DragOver"
+                      DragLeave="GridDropZone_DragLeave"
+                      Drop="GridDropZone_Drop"
+                      Padding="40">
+                    
+                    <Grid>
+                        <Rectangle Stroke="{ThemeResource SystemAccentColor}" 
+                                   StrokeThickness="2" 
+                                   StrokeDashArray="4 4" 
+                                   RadiusX="8" RadiusY="8"/>
+                        <Border CornerRadius="8"
+                                Background="{ThemeResource CardBackgroundFillColorSecondaryBrush}"
+                                Margin="2">
+                            <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" Spacing="16">
+                                <FontIcon Glyph="&#xF136;" FontSize="64" Foreground="{ThemeResource SystemAccentColor}" />
+                                <TextBlock Text="Перетащите стикеры сюда" FontSize="18" FontWeight="SemiBold" HorizontalAlignment="Center" />
+                                <TextBlock Text="Поддерживаются файлы изображений PNG, JPG, JPEG, WEBP. Вы можете перетащить сразу несколько файлов." 
+                                           HorizontalAlignment="Center" 
+                                           Foreground="{ThemeResource SystemControlPageTextBaseMediumBrush}" 
+                                           TextAlignment="Center" 
+                                           MaxWidth="400"
+                                           TextWrapping="Wrap" />
+                                <Button Content="Выбрать файлы на диске" Click="BtnAddFiles_Click" HorizontalAlignment="Center" Style="{StaticResource DefaultButtonStyle}"/>
+                            </StackPanel>
+                        </Border>
+                    </Grid>
+                </Grid>
+
+                <!-- Queue List / Master-Detail (Visible when stickers loaded) -->
+                <Grid x:Name="GridQueueContent" Visibility="Collapsed">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="360" /> <!-- Detail Pane -->
+                    </Grid.ColumnDefinitions>
+
+                    <!-- Left: Sticker List -->
+                    <ListView x:Name="StickerListView" 
+                              Grid.Column="0"
+                              SelectionChanged="StickerListView_SelectionChanged"
+                              Padding="16"
+                              SelectionMode="Single">
+                        <ListView.ItemContainerStyle>
+                            <Style TargetType="ListViewItem">
+                                <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                                <Setter Property="Margin" Value="0,0,0,8" />
+                            </Style>
+                        </ListView.ItemContainerStyle>
+                        <ListView.ItemTemplate>
+                            <DataTemplate x:DataType="local:StickerItem">
+                                <Border BorderBrush="{ThemeResource ControlStrokeColorDefaultBrush}" 
+                                        BorderThickness="1" 
+                                        CornerRadius="6" 
+                                        Background="{ThemeResource CardBackgroundFillColorDefaultBrush}" 
+                                        Padding="12">
+                                    <Grid ColumnSpacing="12">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto" /> <!-- Original thumbnail -->
+                                            <ColumnDefinition Width="Auto" /> <!-- Arrow -->
+                                            <ColumnDefinition Width="Auto" /> <!-- Preview thumbnail -->
+                                            <ColumnDefinition Width="*" />    <!-- Filenames and inputs -->
+                                            <ColumnDefinition Width="Auto" /> <!-- Status badge -->
+                                            <ColumnDefinition Width="Auto" /> <!-- Remove button -->
+                                        </Grid.ColumnDefinitions>
+
+                                        <!-- Original Thumbnail -->
+                                        <Border Width="50" Height="50" CornerRadius="4" Background="#11000000" VerticalAlignment="Center">
+                                            <Image Source="{x:Bind OriginalImageSource, Mode=OneWay}" Stretch="Uniform" />
+                                        </Border>
+
+                                        <!-- Arrow Icon -->
+                                        <FontIcon Grid.Column="1" Glyph="&#xE72A;" FontSize="14" Foreground="{ThemeResource SystemControlPageTextBaseMediumBrush}" VerticalAlignment="Center" />
+
+                                        <!-- Processed Preview Thumbnail with Checkerboard background -->
+                                        <Border Grid.Column="2" Width="50" Height="50" CornerRadius="4" VerticalAlignment="Center" Clip="{Binding ElementName=ClipBorder}">
+                                            <Grid>
+                                                <!-- Checkerboard behind -->
+                                                <Image Source="{Binding ElementName=MainPageRoot, Path=CheckerboardSource}" Stretch="None" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+                                                <!-- Processed preview -->
+                                                <Image Source="{x:Bind PreviewImageSource, Mode=OneWay}" Stretch="Uniform" />
+                                            </Grid>
+                                        </Border>
+
+                                        <!-- Filename Info & Custom Name Textbox -->
+                                        <StackPanel Grid.Column="3" Spacing="4" VerticalAlignment="Center" Margin="8,0">
+                                            <TextBlock Text="{x:Bind FileName}" FontSize="12" Foreground="{ThemeResource SystemControlPageTextBaseMediumBrush}" TextTrimming="CharacterEllipsis"/>
+                                            <Grid ColumnSpacing="6">
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="Auto" />
+                                                    <ColumnDefinition Width="*" />
+                                                </Grid.ColumnDefinitions>
+                                                <TextBlock Text="Имя сохранения:" VerticalAlignment="Center" FontSize="11" Foreground="{ThemeResource SystemControlPageTextBaseMediumBrush}" />
+                                                <TextBox Grid.Column="1" 
+                                                         Text="{x:Bind OutputName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
+                                                         Padding="4,2" 
+                                                         FontSize="12"
+                                                         Height="26"
+                                                         MinHeight="26"/>
+                                            </Grid>
+                                        </StackPanel>
+
+                                        <!-- Status Badge -->
+                                        <Border Grid.Column="4" 
+                                                Padding="8,4" 
+                                                CornerRadius="12" 
+                                                Background="{x:Bind StatusColor, Mode=OneWay}" 
+                                                VerticalAlignment="Center">
+                                            <TextBlock Text="{x:Bind StatusText, Mode=OneWay}" FontSize="10" Foreground="White" FontWeight="SemiBold"/>
+                                        </Border>
+
+                                        <!-- Delete Button -->
+                                        <Button Grid.Column="5" 
+                                                Click="BtnRemoveItem_Click"
+                                                Padding="6"
+                                                Background="Transparent"
+                                                BorderThickness="0"
+                                                VerticalAlignment="Center"
+                                                ToolTipService.ToolTip="Удалить из списка">
+                                            <FontIcon Glyph="&#xE74D;" FontSize="14" Foreground="{ThemeResource SystemControlPageTextBaseMediumBrush}"/>
+                                        </Button>
+                                    </Grid>
+                                </Border>
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                    </ListView>
+
+                    <!-- Splitter line -->
+                    <Border Grid.Column="1" Width="1" Background="{ThemeResource ControlStrokeColorDefaultBrush}" VerticalAlignment="Stretch" />
+
+                    <!-- Right: Detail Pane -->
+                    <Border Grid.Column="2" Background="{ThemeResource CardBackgroundFillColorDefaultBrush}" Padding="16">
+                        <Grid RowSpacing="16">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" /> <!-- Title -->
+                                <RowDefinition Height="Auto" /> <!-- Large Side-by-Side View -->
+                                <RowDefinition Height="*" />    <!-- Custom Options for this Item -->
+                            </Grid.RowDefinitions>
+
+                            <TextBlock Grid.Row="0" Text="Детали стикера" FontSize="15" FontWeight="SemiBold" />
+
+                            <!-- Large Preview Side-by-Side Card -->
+                            <Border Grid.Row="1" 
+                                    BorderBrush="{ThemeResource ControlStrokeColorDefaultBrush}" 
+                                    BorderThickness="1" 
+                                    CornerRadius="6" 
+                                    Background="{ThemeResource SolidBackgroundFillColorBaseBrush}" 
+                                    Padding="12"
+                                    Height="160">
+                                <Grid ColumnDefinitions="*,Auto,*">
+                                    <!-- Original -->
+                                    <Grid Grid.Column="0">
+                                        <Image Source="{Binding SelectedItem.OriginalImageSource, ElementName=StickerListView, Mode=OneWay}" Stretch="Uniform" MaxHeight="120" MaxWidth="120" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                        <Border Background="#99000000" CornerRadius="4" HorizontalAlignment="Left" VerticalAlignment="Bottom" Padding="4,2">
+                                            <TextBlock Text="Оригинал" FontSize="9" Foreground="White" />
+                                        </Border>
+                                    </Grid>
+                                    
+                                    <!-- Divider -->
+                                    <FontIcon Grid.Column="1" Glyph="&#xE72A;" FontSize="18" Foreground="{ThemeResource SystemControlPageTextBaseMediumBrush}" Margin="8,0" VerticalAlignment="Center" />
+
+                                    <!-- Processed Preview -->
+                                    <Grid Grid.Column="2">
+                                        <!-- Checkerboard behind -->
+                                        <Image Source="{Binding CheckerboardSource, ElementName=MainPageRoot}" Stretch="None" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                        <Image Source="{Binding SelectedItem.PreviewImageSource, ElementName=StickerListView, Mode=OneWay}" Stretch="Uniform" MaxHeight="120" MaxWidth="120" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                        <Border Background="#99000000" CornerRadius="4" HorizontalAlignment="Left" VerticalAlignment="Bottom" Padding="4,2">
+                                            <TextBlock Text="Результат" FontSize="9" Foreground="White" />
+                                        </Border>
+                                    </Grid>
+                                </Grid>
+                            </Border>
+
+                            <!-- Individual Settings Panel -->
+                            <ScrollViewer Grid.Row="2" VerticalScrollBarVisibility="Auto">
+                                <ContentControl x:Name="DetailSettingsPanel" IsEnabled="False" HorizontalContentAlignment="Stretch">
+                                    <StackPanel Spacing="16">
+                                        <TextBlock Text="Индивидуальные параметры" FontSize="13" FontWeight="SemiBold"/>
+                                        
+                                        <CheckBox x:Name="ChkCustomSettings" 
+                                                  Content="Настроить этот стикер отдельно" 
+                                                  Checked="ChkCustomSettings_Checked" 
+                                                  Unchecked="ChkCustomSettings_Unchecked"/>
+
+                                        <ContentControl x:Name="PanelLocalControls" IsEnabled="False" HorizontalContentAlignment="Stretch">
+                                            <StackPanel Spacing="12">
+                                                <!-- Local Mode -->
+                                                <StackPanel Spacing="6">
+                                                    <TextBlock Text="Метод удаления:" FontSize="12" />
+                                                    <RadioButton x:Name="RadioLocalFloodFill" Content="Заливка от краев (Flood Fill)" IsChecked="True" Checked="LocalSetting_Changed" />
+                                                    <RadioButton x:Name="RadioLocalGlobal" Content="По всему изображению" Checked="LocalSetting_Changed" />
+                                                </StackPanel>
+
+                                                <!-- Local Color -->
+                                                <StackPanel Spacing="6">
+                                                    <TextBlock Text="Цвет фона:" FontSize="12" />
+                                                    <Grid ColumnSpacing="12">
+                                                        <Grid.ColumnDefinitions>
+                                                            <ColumnDefinition Width="Auto" />
+                                                            <ColumnDefinition Width="*" />
+                                                        </Grid.ColumnDefinitions>
+                                                        
+                                                        <Border x:Name="RectLocalColorPreview" 
+                                                                Width="28" Height="28" 
+                                                                CornerRadius="4" 
+                                                                BorderThickness="1" 
+                                                                BorderBrush="{ThemeResource ControlStrokeColorDefaultBrush}"
+                                                                Background="Black"/>
+                                                        
+                                                        <Button x:Name="BtnPickLocalColor" Grid.Column="1" Content="Выбрать цвет" Padding="6,2" FontSize="12">
+                                                            <Button.Flyout>
+                                                                <Flyout>
+                                                                    <ColorPicker x:Name="LocalColorPicker" IsAlphaEnabled="False" ColorChanged="LocalColorPicker_ColorChanged" />
+                                                                </Flyout>
+                                                            </Button.Flyout>
+                                                        </Button>
+                                                    </Grid>
+                                                </StackPanel>
+
+                                                <!-- Local Tolerance -->
+                                                <StackPanel Spacing="4">
+                                                    <Grid>
+                                                        <TextBlock Text="Порог допуска:" FontSize="12" />
+                                                        <TextBlock Text="{Binding ElementName=SliderLocalTolerance, Path=Value, Converter={StaticResource StringFormatConverter}, ConverterParameter='\{0:0\}%'}" 
+                                                                   HorizontalAlignment="Right" FontSize="11" Foreground="{ThemeResource SystemAccentColor}" />
+                                                    </Grid>
+                                                    <Slider x:Name="SliderLocalTolerance" Minimum="0" Maximum="100" Value="15" ValueChanged="SliderLocalTolerance_ValueChanged" />
+                                                </StackPanel>
+                                            </StackPanel>
+                                        </ContentControl>
+
+                                        <!-- Technical Info -->
+                                        <Border BorderBrush="{ThemeResource ControlStrokeColorDefaultBrush}" BorderThickness="1" CornerRadius="4" Padding="10" Background="{ThemeResource CardBackgroundFillColorSecondaryBrush}">
+                                            <StackPanel Spacing="4">
+                                                <TextBlock Text="Информация о файле:" FontSize="11" FontWeight="SemiBold"/>
+                                                <TextBlock x:Name="TxtInfoFileName" Text="Имя: -" FontSize="11" Foreground="{ThemeResource SystemControlPageTextBaseMediumBrush}"/>
+                                                <TextBlock x:Name="TxtInfoResolution" Text="Разрешение: - " FontSize="11" Foreground="{ThemeResource SystemControlPageTextBaseMediumBrush}"/>
+                                                <TextBlock x:Name="TxtInfoPath" Text="Путь: -" FontSize="10" Foreground="{ThemeResource SystemControlPageTextBaseMediumBrush}" TextWrapping="Wrap"/>
+                                                <TextBlock x:Name="TxtInfoStatusMsg" Text="" FontSize="11" Foreground="{ThemeResource SystemControlErrorTextForegroundBrush}" TextWrapping="Wrap"/>
+                                            </StackPanel>
+                                        </Border>
+                                    </StackPanel>
+                                </ContentControl>
+                            </ScrollViewer>
+                        </Grid>
+                    </Border>
+                </Grid>
+            </Grid>
+        </Grid>
+    </Grid>
+</Page>

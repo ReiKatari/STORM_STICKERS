@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "STORM STICKERS (Package)": {
+      "commandName": "MsixPackage"
+    },
+    "STORM STICKERS (Unpackaged)": {
+      "commandName": "Project"
+    }
+  }
+}
